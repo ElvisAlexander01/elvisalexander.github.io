@@ -1,0 +1,1537 @@
+/* ============================================================
+   style.css — For Stephanie
+   Sections:
+    1. CSS Variables (Design Tokens)
+    2. Reset & Base
+    3. Music Start Overlay
+    4. Floating Music Toggle
+    5. Floating Hearts Background
+    6. Section Layout Utilities
+    7. Hero
+    8. Gallery Grid
+    9. Video Moments
+   10. Timeline
+   11. Love Letter
+   12. Footer
+   13. Lightbox
+   14. Scroll Reveal
+   15. Count-Up Timer
+   16. Typewriter Caret
+   17. Candle
+   18. Flip Card (Things I Love)
+   19. Polaroid Drifting Strip
+   20. Rose Petals
+   21. Song / Lyrics Card
+   22. Leave a Message
+   23. Secret Heart
+   24. Keyframe Animations
+   25. Reduced Motion
+   ============================================================ */
+
+
+/* ── 1. CSS Variables (Design Tokens) ────────────────────── */
+
+:root {
+  /* Colors */
+  --bg:        #14090f;
+  --bg-soft:   #1f0d16;
+  --rose:      #e8a0b4;
+  --rose-deep: #b5476a;
+  --cream:     #f6ece9;
+  --muted:     rgba(246, 236, 233, 0.62);
+  --line:      rgba(232, 160, 180, 0.22);
+
+  /* Typography */
+  --font-head:   "Playfair Display", Georgia, serif;
+  --font-accent: "Cormorant Garamond", Georgia, serif;
+  --font-script: "Dancing Script", cursive;
+  --font-body:   "Inter", system-ui, sans-serif;
+
+  /* Layout */
+  --max:    1100px;
+  --radius: 16px;
+}
+
+
+/* ── 2. Reset & Base ─────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  font-family: var(--font-body);
+  font-weight: 300;
+  background: var(--bg);
+  color: var(--cream);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+
+/* ── 3. Music Start Overlay ──────────────────────────────── */
+
+#start-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(181, 71, 106, 0.35), transparent 60%),
+    var(--bg);
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#start-overlay.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.start-inner {
+  padding: 2rem;
+}
+
+.start-inner .pulse-heart {
+  font-size: 3rem;
+  color: var(--rose);
+  animation: heartbeat 1.6s ease-in-out infinite;
+}
+
+.start-inner h2 {
+  font-family: var(--font-head);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  color: var(--cream);
+  margin: 1rem 0 0.4rem;
+}
+
+.start-inner p {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+
+#start-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 2.2rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: var(--cream);
+  background: transparent;
+  border: 1px solid var(--rose);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+#start-btn:hover {
+  background: var(--rose);
+  color: var(--bg);
+  transform: translateY(-2px);
+}
+
+
+/* ── 4. Floating Music Toggle ────────────────────────────── */
+
+.music-toggle {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 900;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(31, 13, 22, 0.7);
+  backdrop-filter: blur(8px);
+  color: var(--rose);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.3s ease;
+}
+
+.music-toggle:hover {
+  transform: scale(1.08);
+  background: var(--rose-deep);
+  color: var(--cream);
+}
+
+.music-toggle.playing i {
+  animation: spin 4s linear infinite;
+}
+
+.music-toggle.muted {
+  opacity: 0.55;
+}
+
+
+/* ── 5. Floating Hearts Background ──────────────────────── */
+
+.hearts-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hearts-bg .heart {
+  position: absolute;
+  bottom: -40px;
+  color: var(--rose);
+  opacity: 0;
+  animation: floatUp linear forwards;
+}
+
+
+/* ── 6. Section Layout Utilities ─────────────────────────── */
+
+.section {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(4rem, 10vw, 7rem) 1.5rem;
+}
+
+/* Dark background variant — breaks out of max-width */
+.section-dark {
+  max-width: none;
+  background: var(--bg-soft);
+}
+
+.section-dark > * {
+  max-width: var(--max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Centered section heading block */
+.section-head {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.kicker {
+  font-family: var(--font-script);
+  font-size: 1.5rem;
+  color: var(--rose);
+  margin-bottom: 0.5rem;
+}
+
+.section-head h2 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  color: var(--cream);
+  text-wrap: balance;
+}
+
+.lede {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--muted);
+  margin-top: 0.75rem;
+  text-wrap: pretty;
+}
+
+
+/* ── 7. Hero ─────────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(181, 71, 106, 0.4), transparent 55%),
+    linear-gradient(180deg, #1f0d16, var(--bg));
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 120%, transparent, var(--bg) 80%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 1.5rem;
+}
+
+.hero-pre {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: 1.05rem;
+  letter-spacing: 0.2em;
+  color: var(--rose);
+  margin-bottom: 1rem;
+}
+
+.hero-title {
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: clamp(2.8rem, 11vw, 6rem);
+  line-height: 1.05;
+  color: var(--cream);
+}
+
+.hero-title span {
+  font-style: italic;
+  color: var(--rose);
+}
+
+.hero-sub {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  color: var(--muted);
+  margin-top: 1.25rem;
+  min-height: 1.6em;
+  text-wrap: pretty;
+}
+
+.scroll-cue {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 3rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+  animation: bob 2s ease-in-out infinite;
+}
+
+.scroll-cue i {
+  font-size: 0.9rem;
+  color: var(--rose);
+}
+
+
+/* ── 8. Gallery Grid ─────────────────────────────────────── */
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .gallery-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.g-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  background: var(--bg-soft);
+}
+
+.g-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.95) brightness(0.95);
+  transition: transform 0.6s ease, filter 0.6s ease;
+}
+
+/* Heart icon overlay on hover */
+.g-item::after {
+  content: "\f004";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--cream);
+  background: rgba(20, 9, 15, 0.45);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.g-item:hover img {
+  transform: scale(1.08);
+  filter: saturate(1.1) brightness(1.05);
+}
+
+.g-item:hover::after {
+  opacity: 1;
+}
+
+
+/* ── 9. Video Moments ────────────────────────────────────── */
+
+.video-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 720px) {
+  .video-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.v-item {
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+  border: 1px solid var(--line);
+}
+
+.v-item video {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+
+/* ── 10. Timeline ────────────────────────────────────────── */
+
+.timeline {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+  padding-left: 2rem;
+}
+
+/* Vertical connecting line */
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(var(--rose-deep), transparent);
+}
+
+.t-item {
+  position: relative;
+  padding-bottom: 2.5rem;
+}
+
+.t-dot {
+  position: absolute;
+  left: -2rem;
+  top: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--rose);
+  box-shadow: 0 0 0 4px rgba(232, 160, 180, 0.18);
+}
+
+.t-card {
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.t-date {
+  font-family: var(--font-script);
+  font-size: 1.2rem;
+  color: var(--rose);
+}
+
+.t-card h3 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: 1.4rem;
+  color: var(--cream);
+  margin: 0.25rem 0 0.6rem;
+}
+
+.t-card p {
+  color: var(--muted);
+}
+
+
+/* ── 11. Love Letter ─────────────────────────────────────── */
+
+.letter-card {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: clamp(1.75rem, 5vw, 3rem);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+}
+
+.letter-greeting {
+  font-family: var(--font-script);
+  font-size: 1.8rem;
+  color: var(--rose);
+  margin-bottom: 1.25rem;
+}
+
+.letter-body p {
+  font-family: var(--font-accent);
+  font-size: 1.2rem;
+  color: var(--cream);
+  margin-bottom: 1.1rem;
+  text-wrap: pretty;
+}
+
+.letter-sign {
+  margin-top: 1.5rem;
+  font-family: var(--font-accent);
+  font-style: italic;
+  color: var(--muted);
+}
+
+.letter-sign span {
+  font-family: var(--font-script);
+  font-style: normal;
+  font-size: 1.5rem;
+  color: var(--rose);
+}
+
+
+/* ── 12. Footer ──────────────────────────────────────────── */
+
+.footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: var(--bg-soft);
+  border-top: 1px solid var(--line);
+}
+
+.footer p {
+  margin-top: 0.75rem;
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+
+
+/* ── 13. Lightbox ────────────────────────────────────────── */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(20, 9, 15, 0.92);
+  backdrop-filter: blur(6px);
+}
+
+.lightbox.open {
+  display: flex;
+}
+
+.lightbox img {
+  max-width: 92vw;
+  max-height: 88vh;
+  border-radius: var(--radius);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.lb-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.75rem;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: var(--cream);
+  cursor: pointer;
+}
+
+
+/* ── 14. Scroll Reveal ───────────────────────────────────── */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ── 15. Count-Up Timer ──────────────────────────────────── */
+
+.countup {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.cu-block {
+  min-width: 70px;
+  padding: 0.75rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(31, 13, 22, 0.55);
+  backdrop-filter: blur(6px);
+  text-align: center;
+}
+
+.cu-block span {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 1.6rem;
+  color: var(--rose);
+  line-height: 1;
+}
+
+.cu-block small {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.countup-label {
+  margin-top: 0.75rem;
+  font-family: var(--font-accent);
+  font-style: italic;
+  color: var(--muted);
+}
+
+
+/* ── 16. Typewriter Caret ────────────────────────────────── */
+
+.caret {
+  display: inline-block;
+  color: var(--rose);
+  font-weight: 300;
+  animation: blink 1s steps(1) infinite;
+}
+
+
+/* ── 17. Candle ──────────────────────────────────────────── */
+
+.candle {
+  position: relative;
+  width: 26px;
+  height: 70px;
+  margin: 2.5rem auto 0;
+}
+
+.candle .wax {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 26px;
+  height: 52px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #f6ece9, #d9c3bd);
+}
+
+.candle .wick {
+  position: absolute;
+  bottom: 52px;
+  left: 12px;
+  width: 2px;
+  height: 8px;
+  background: #3a2a2a;
+}
+
+.candle .flame {
+  position: absolute;
+  bottom: 58px;
+  left: 8px;
+  width: 12px;
+  height: 22px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(circle at 50% 70%, #fff6d6, #ffb24d 55%, #ff6a00 90%);
+  transform-origin: 50% 100%;
+  box-shadow: 0 0 18px 6px rgba(255, 150, 40, 0.45);
+  animation: flicker 1.4s ease-in-out infinite;
+}
+
+
+/* ── 18. Flip Card (Things I Love) ──────────────────────── */
+
+.reason-wrap {
+  text-align: center;
+}
+
+.reason-card {
+  width: min(420px, 90vw);
+  height: 240px;
+  margin: 0 auto;
+  perspective: 1200px;
+  cursor: pointer;
+}
+
+.reason-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.reason-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.reason-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  backface-visibility: hidden;
+}
+
+.reason-face i {
+  font-size: 1.6rem;
+  color: var(--rose);
+}
+
+.reason-face p {
+  font-family: var(--font-accent);
+  font-size: 1.3rem;
+  color: var(--cream);
+  text-wrap: pretty;
+}
+
+/* Back face is pre-rotated so it shows when card flips */
+.reason-back {
+  transform: rotateY(180deg);
+}
+
+.reason-hint {
+  margin-top: 1.25rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+
+/* ── 19. Polaroid Drifting Strip ─────────────────────────── */
+
+.polaroid-track {
+  overflow: hidden;
+  width: 100%;
+}
+
+.polaroid-strip {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: drift 40s linear infinite;
+}
+
+/* Pause drift on hover */
+.polaroid-track:hover .polaroid-strip {
+  animation-play-state: paused;
+}
+
+.polaroid {
+  flex: 0 0 auto;
+  width: 180px;
+  padding: 12px 12px 38px;
+  background: #f6ece9;
+  border-radius: 4px;
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.45);
+  transform: rotate(var(--tilt, -3deg));
+}
+
+.polaroid img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.polaroid span {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  font-family: var(--font-script);
+  font-size: 1.1rem;
+  color: #b5476a;
+}
+
+
+/* ── 20. Rose Petals ─────────────────────────────────────── */
+
+.petals-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.petals-bg .petal {
+  position: absolute;
+  top: -40px;
+  width: 18px;
+  height: 18px;
+  background: var(--rose-deep);
+  border-radius: 50% 0 50% 0;
+  opacity: 0;
+  animation: petalFall linear forwards;
+}
+
+
+/* ── 21. Song / Lyrics Card ──────────────────────────────── */
+
+.lyrics-card {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 850;
+  max-width: 90vw;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(31, 13, 22, 0.82);
+  backdrop-filter: blur(8px);
+  text-align: center;
+}
+
+.lyrics-label {
+  display: block;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rose);
+  margin-bottom: 0.25rem;
+}
+
+#lyrics-line {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--cream);
+  transition: opacity 0.4s ease;
+}
+
+
+/* ── 22. Leave a Message ─────────────────────────────────── */
+
+.reply-card {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+#reply-input {
+  width: 100%;
+  resize: vertical;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+  color: var(--cream);
+  font-family: var(--font-accent);
+  font-size: 1.15rem;
+  line-height: 1.5;
+}
+
+#reply-input::placeholder {
+  color: var(--muted);
+}
+
+#reply-input:focus {
+  outline: none;
+  border-color: var(--rose);
+}
+
+.reply-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.reply-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  color: var(--bg);
+  background: var(--rose);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.reply-btn:hover {
+  background: var(--rose-deep);
+  color: var(--cream);
+  transform: translateY(-2px);
+}
+
+.reply-status {
+  font-family: var(--font-accent);
+  font-style: italic;
+  color: var(--rose);
+}
+
+.reply-saved-label {
+  margin-top: 1.5rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.reply-saved {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--rose);
+  font-family: var(--font-accent);
+  font-size: 1.2rem;
+  color: var(--cream);
+  text-wrap: pretty;
+}
+
+
+/* ── 23. Secret Heart ────────────────────────────────────── */
+
+.secret-heart {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--rose-deep);
+  font-size: 1.4rem;
+  transition: transform 0.2s ease;
+}
+
+.secret-heart:hover {
+  transform: scale(1.2);
+}
+
+.secret-heart i {
+  animation: heartbeat 1.6s ease-in-out infinite;
+}
+
+.secret-count {
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  min-height: 1rem;
+}
+
+.secret-message {
+  max-width: 560px;
+  margin: 1.5rem auto 0;
+  padding: 1.5rem;
+  border: 1px solid var(--rose);
+  border-radius: var(--radius);
+  background: var(--bg);
+  animation: revealSecret 0.8s ease forwards;
+}
+
+.secret-message i {
+  font-size: 1.4rem;
+  color: var(--rose);
+}
+
+.secret-message p {
+  margin-top: 0.75rem;
+  font-family: var(--font-accent);
+  font-size: 1.2rem;
+  color: var(--cream);
+  text-wrap: pretty;
+}
+
+
+/* ── 24. Keyframe Animations ─────────────────────────────── */
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  25%       { transform: scale(1.15); }
+  40%       { transform: scale(1); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(8px); }
+}
+
+@keyframes floatUp {
+  0%   { transform: translateY(0) scale(0.6);      opacity: 0; }
+  10%  { opacity: 0.8; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes flicker {
+  0%, 100% { transform: rotate(-2deg) scale(1);    opacity: 0.95; }
+  25%       { transform: rotate(2deg) scale(1.04);  opacity: 1; }
+  50%       { transform: rotate(-1deg) scale(0.97); opacity: 0.9; }
+  75%       { transform: rotate(1.5deg) scale(1.02); opacity: 1; }
+}
+
+@keyframes drift {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes petalFall {
+  0%   { transform: translateY(-40px) rotate(0deg);   opacity: 0; }
+  10%  { opacity: 0.9; }
+  100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+}
+
+@keyframes revealSecret {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+/* ── 25. Reduced Motion ──────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+  /* ── Stars Background ────────────────────────────────────── */
+.stars-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  animation: twinkle ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50%       { opacity: 1; transform: scale(1); }
+}
+
+
+/* ── Poem Section ────────────────────────────────────────── */
+/* ── Poem Section ────────────────────────────────────────── */
+
+.poem-section {
+  background:
+    radial-gradient(circle at 70% 30%, rgba(181, 71, 106, 0.12), transparent 55%),
+    var(--bg);
+}
+
+.poem-card {
+  max-width: 580px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  padding: 0 1rem;
+}
+
+/* Large decorative quote marks */
+.poem-card::before,
+.poem-card::after {
+  content: "\201C";
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 7rem;
+  line-height: 1;
+  color: #b5476a;
+  opacity: 0.15;
+  position: absolute;
+  pointer-events: none;
+}
+
+.poem-card::before {
+  top: -2.5rem;
+  left: -1rem;
+}
+
+.poem-card::after {
+  content: "\201D";
+  bottom: -5rem;
+  right: -1rem;
+}
+
+.poem-lines {
+  position: relative;
+  z-index: 1;
+}
+
+/* Every line starts hidden and shifted down */
+.poem-lines p,
+.poem-author {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: #f6ece9;
+  line-height: 2;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+/* The last three emotional lines get special styling */
+.poem-lines p.poem-last {
+  color: #e8a0b4;
+  font-style: italic;
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+}
+
+/* Author line */
+.poem-author {
+  margin-top: 2.5rem;
+  font-family: "Dancing Script", cursive;
+  font-size: 1.3rem;
+  color: rgba(246, 236, 233, 0.55);
+}
+
+/* Visible state — JS adds this class with staggered delays */
+.poem-lines p.poem-visible,
+.poem-author.poem-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Blank lines (br tags) get spacing via empty paragraph trick */
+.poem-lines .poem-spacer {
+  display: block;
+  height: 0.8rem;
+  opacity: 1 !important;
+  transform: none !important;
+}
+.poem-section {
+  background:
+    radial-gradient(circle at 70% 30%, rgba(181, 71, 106, 0.12), transparent 55%),
+    var(--bg);
+}
+
+.poem-card {
+  max-width: 580px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+}
+
+.poem-card::before,
+.poem-card::after {
+  content: "\201C";
+  font-family: var(--font-head);
+  font-size: 8rem;
+  line-height: 1;
+  color: var(--rose-deep);
+  opacity: 0.18;
+  position: absolute;
+}
+
+.poem-card::before { top: -2rem; left: -2rem; }
+.poem-card::after  { content: "\201D"; bottom: -4rem; right: -2rem; }
+
+.poem-lines {
+  position: relative;
+  z-index: 1;
+}
+
+.poem-lines p {
+  font-family: var(--font-accent);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: var(--cream);
+  line-height: 1.9;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.poem-lines p.poem-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.poem-lines p.poem-last {
+  color: var(--rose);
+  font-style: italic;
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+}
+
+.poem-author {
+  margin-top: 2.5rem;
+  font-family: var(--font-script);
+  font-size: 1.3rem;
+  color: var(--muted);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;
+}
+
+.poem-author.poem-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ── Promise Section ─────────────────────────────────────── */
+.promise-section {
+  background:
+    radial-gradient(circle at 30% 60%, rgba(181, 71, 106, 0.1), transparent 50%),
+    var(--bg);
+}
+
+.promise-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .promise-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.promise-item {
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 2rem 1.75rem;
+  text-align: center;
+  transition: border-color 0.4s ease, transform 0.3s ease, box-shadow 0.4s ease;
+}
+
+.promise-item:hover {
+  border-color: rgba(232, 160, 180, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.promise-item i {
+  font-size: 2rem;
+  color: var(--rose);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.promise-item h3 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: 1.3rem;
+  color: var(--cream);
+  margin-bottom: 0.75rem;
+}
+
+.promise-item p {
+  font-family: var(--font-accent);
+  font-size: 1.1rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+
+/* ── Secret Section (moved from footer) ──────────────────── */
+.secret-section {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(181, 71, 106, 0.1), transparent 60%),
+    var(--bg-soft);
+  max-width: none;
+  text-align: center;
+}
+
+.secret-section > * {
+  max-width: var(--max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.secret-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.secret-heart {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--rose-deep);
+  font-size: 3rem;
+  transition: transform 0.2s ease, filter 0.3s ease;
+}
+
+.secret-heart:hover {
+  filter: drop-shadow(0 0 20px rgba(181, 71, 106, 0.7));
+}
+
+.secret-heart i {
+  animation: heartbeat 1.8s ease-in-out infinite;
+}
+
+
+/* ── Lyrics card — music ended state ─────────────────────── */
+.lyrics-card {
+  transition: opacity 0.8s ease;
+}
+
+.lyrics-card.ended {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Secret message show fix */
+.secret-message.hidden {
+  display: none !important;
+}
+
+.secret-message {
+  display: block;
+  max-width: 560px;
+  margin: 2rem auto 0;
+  padding: 2rem;
+  border: 1px solid var(--rose);
+  border-radius: var(--radius);
+  background: var(--bg);
+  animation: revealSecret 0.9s ease forwards;
+}
+
+
+/* ── Footer update ───────────────────────────────────────── */
+.footer-heart {
+  display: block;
+  font-size: 1.8rem;
+  color: var(--rose-deep);
+  margin: 0 auto 1rem;
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+.footer-small {
+  font-size: 0.85rem !important;
+  opacity: 0.6;
+  margin-top: 0.25rem !important;
+}
+/* ── Password Gate ───────────────────────────────────────── */
+
+#password-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(181, 71, 106, 0.4), transparent 60%),
+    var(--bg);
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#password-gate.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pw-inner {
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 380px;
+  width: 90vw;
+}
+
+.pw-heart {
+  font-size: 2.8rem;
+  color: var(--rose);
+  animation: heartbeat 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 16px rgba(181, 71, 106, 0.5));
+  margin-bottom: 0.5rem;
+}
+
+.pw-inner h2 {
+  font-family: var(--font-head);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  color: var(--cream);
+  line-height: 1.25;
+}
+
+.pw-inner > p {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.pw-field-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  border: 1px solid var(--rose);
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(26, 10, 18, 0.7);
+  backdrop-filter: blur(8px);
+  transition: box-shadow 0.3s ease;
+}
+
+.pw-field-wrap:focus-within {
+  box-shadow: 0 0 0 3px rgba(232, 160, 180, 0.2);
+}
+
+#pw-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0.85rem 1.25rem;
+  font-family: var(--font-accent);
+  font-size: 1.1rem;
+  color: var(--cream);
+  letter-spacing: 0.15em;
+}
+
+#pw-input::placeholder {
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+#pw-submit {
+  background: var(--rose);
+  border: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  margin: 3px;
+  cursor: pointer;
+  color: var(--bg);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+#pw-submit:hover {
+  background: var(--rose-deep);
+  color: var(--cream);
+  transform: scale(1.08);
+}
+
+.pw-error {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--rose-deep);
+  animation: shake 0.4s ease;
+  margin-top: 0.25rem;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-8px); }
+  40%       { transform: translateX(8px); }
+  60%       { transform: translateX(-6px); }
+  80%       { transform: translateX(6px); }
+}
+}
