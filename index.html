@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Stephanie</title>
+
+  <!-- ── Fonts ─────────────────────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&family=Dancing+Script:wght@500;700&family=Inter:wght@300;400&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- ── Icons ─────────────────────────────────────────────── -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+    <style>
+    #password-gate {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: #0e060b;
+        background-image: radial-gradient(circle at 50% 40%, rgba(181,71,106,0.45), transparent 60%);
+        transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    #password-gate.fade-out {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+    .pw-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 2.5rem 2rem;
+        max-width: 380px;
+        width: 90vw;
+    }
+    .pw-heart {
+        font-size: 3rem;
+        color: #e8a0b4;
+        margin-bottom: 0.5rem;
+        animation: pw-beat 1.6s ease-in-out infinite;
+    }
+    @keyframes pw-beat {
+        0%, 100% { transform: scale(1); }
+        25%       { transform: scale(1.2); }
+        40%       { transform: scale(1); }
+    }
+    .pw-inner h2 {
+        font-family: "Playfair Display", Georgia, serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: clamp(1.4rem, 5vw, 2rem);
+        color: #f6ece9;
+        line-height: 1.3;
+        margin: 0;
+    }
+    .pw-inner > p {
+        font-size: 0.72rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(246,236,233,0.6);
+        margin: 0;
+    }
+    .pw-field-wrap {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        border: 1px solid #e8a0b4;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(26,10,18,0.8);
+        margin-top: 0.5rem;
+    }
+    #pw-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        padding: 0.85rem 1.25rem;
+        font-family: Georgia, serif;
+        font-style: italic;
+        font-size: 1rem;
+        color: #f6ece9;
+        letter-spacing: 0.12em;
+    }
+    #pw-input::placeholder {
+        color: rgba(246,236,233,0.45);
+    }
+    #pw-submit {
+        background: #e8a0b4;
+        border: none;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        margin: 3px;
+        cursor: pointer;
+        color: #0e060b;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: background 0.3s ease;
+    }
+    #pw-submit:hover {
+        background: #b5476a;
+        color: #f6ece9;
+    }
+    .pw-error {
+        font-family: Georgia, serif;
+        font-style: italic;
+        color: #b5476a;
+        font-size: 0.95rem;
+        animation: pw-shake 0.4s ease;
+        margin: 0;
+    }
+    @keyframes pw-shake {
+        0%,100% { transform: translateX(0); }
+        20%      { transform: translateX(-8px); }
+        40%      { transform: translateX(8px); }
+        60%      { transform: translateX(-6px); }
+        80%      { transform: translateX(6px); }
+    }
+    .pw-error.hidden { display: none; }
+    </style>
+  <!-- ── Styles ─────────────────────────────────────────────── -->
+  <link rel="stylesheet" href="mg.css" />
+</head>
+<body>
+<!-- PASSWORD GATE — must be very first thing in body -->
+    <div id="password-gate">
+    <div class="pw-inner">
+        <i class="fa-solid fa-heart pw-heart"></i>
+        <h2>This was made for someone special.</h2>
+        <p>Enter the password to open it.</p>
+        <div class="pw-field-wrap">
+        <input
+            type="password"
+            id="pw-input"
+            placeholder="enter password…"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+        />
+        <button id="pw-submit">
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        </div>
+        <p id="pw-error" class="pw-error hidden">That's not it. Try again.</p>
+    </div>
+    </div>
+  <!-- ============================================================
+       OVERLAYS & UTILITIES
+       ============================================================ -->
+
+  <!-- Music start overlay (shown before any interaction) -->
+  <div id="start-overlay">
+    <div class="start-inner">
+      <i class="fa-solid fa-heart pulse-heart"></i>
+      <h2>For Stephanie</h2>
+      <p>Press play to begin</p>
+      <button id="start-btn">
+        <i class="fa-solid fa-play"></i> Begin
+      </button>
+    </div>
+  </div>
+
+  <!-- Background music — place song.mp3 in this same folder -->
+  <audio id="bg-music">
+    <source src="song.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Floating music toggle button (top-right corner) -->
+  <button id="music-toggle" class="music-toggle hidden" title="Toggle music">
+    <i class="fa-solid fa-music"></i>
+  </button>
+
+  <!-- Song dedication / lyrics display card -->
+  <div id="lyrics-card" class="lyrics-card hidden">
+    <span class="lyrics-label">
+      <i class="fa-solid fa-music"></i> Now playing
+    </span>
+    <p id="lyrics-line">&hellip;</p>
+  </div>
+
+  <!-- Floating hearts animation layer -->
+  <div id="hearts-bg" class="hearts-bg"></div>
+
+  <!-- Rose petals layer (falls when scrolled to bottom) -->
+  <div id="petals-bg" class="petals-bg"></div>
+
+  <!-- Stars layer -->
+   <div id="stars-bg" class="stars-bg"></div>
+
+  <!-- ============================================================
+       1. HERO
+       ============================================================ -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+
+      <p class="hero-pre">&mdash; a quiet love letter &mdash;</p>
+      <h1 class="hero-title">For <span>Stephanie</span></h1>
+
+      <!-- Typewriter effect subtitle -->
+      <p class="hero-sub">
+        <span id="typewriter"></span><span class="caret">|</span>
+      </p>
+
+      <!-- Count-up timer -->
+      <div class="countup" id="countup">
+        <div class="cu-block">
+          <span id="cu-days">0</span>
+          <small>days</small>
+        </div>
+        <div class="cu-block">
+          <span id="cu-hours">0</span>
+          <small>hours</small>
+        </div>
+        <div class="cu-block">
+          <span id="cu-mins">0</span>
+          <small>minutes</small>
+        </div>
+        <div class="cu-block">
+          <span id="cu-secs">0</span>
+          <small>seconds</small>
+        </div>
+      </div>
+      <p class="countup-label">since the moment we met</p>
+
+      <!-- Ambient candle -->
+      <div class="candle" title="for you">
+        <div class="flame"></div>
+        <div class="wick"></div>
+        <div class="wax"></div>
+      </div>
+
+      <a href="#letter" class="scroll-cue">
+        <span>scroll</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       2. LOVE LETTER
+       ============================================================ -->
+  <section id="letter" class="section section-dark">
+    <div class="section-head">
+      <p class="kicker">A letter</p>
+      <h2>From me, to you.</h2>
+    </div>
+
+    <div class="letter-card">
+      <p class="letter-greeting">Dear Stephanie,</p>
+
+      <div class="letter-body" id="letter-body">
+        <p>I know your mind is made up, and I want you to know &mdash; I respect that. I&apos;m not writing this to pull you back, or to make you feel guilty, or to ask you for anything.</p>
+        <p>I&apos;m writing this because some feelings deserve to be said out loud, even if no one answers.</p>
+        <p>I loved you. I still do. Quietly, in the small hours when no one is watching. In songs I can&apos;t listen to anymore. In photos I scroll past too quickly. In the silence where your voice used to be.</p>
+        <p>I&apos;m sorry for the misunderstanding &mdash; for the part of it that was mine. I would undo it a thousand times if I could. But I can&apos;t, and I&apos;ve learned to live with that.</p>
+        <p>If life takes you far from me, I hope it takes you somewhere beautiful. I hope someone loves you the way you deserve &mdash; patiently, gently, completely. I hope you laugh that laugh I used to live for. I hope you&apos;re happy, Stephanie. Truly.</p>
+        <p>And if one day &mdash; only if &mdash; your heart ever turns this way again, you&apos;ll find me here. Not waiting in a way that traps you. Just&hellip; here. Still soft. Still yours, in the quiet way I&apos;ve always been.</p>
+        <p>Thank you for every moment. Even the ones that hurt. They were yours, and that made them worth it.</p>
+      </div>
+
+      <p class="letter-sign">Always,<br /><span>&mdash; Me</span></p>
+    </div>
+  </section>
+
+    <!-- POEM SECTION -->
+    <section id="poem" class="section poem-section">
+    <div class="section-head">
+        <p class="kicker">Written for you</p>
+        <h2>A poem I never sent.</h2>
+    </div>
+    <div class="poem-card">
+        <div class="poem-lines">
+        <p>You were the kind of warmth</p>
+        <p>that doesn&apos;t announce itself &mdash;</p>
+        <p>the way morning light slips under a door</p>
+        <p>before anyone is awake to name it.</p>
+        <br />
+        <p>I kept you in my chest like a held breath,</p>
+        <p>afraid that if I exhaled,</p>
+        <p>you&apos;d scatter into the air</p>
+        <p>and I&apos;d spend forever trying</p>
+        <p>to breathe you back in.</p>
+        <br />
+        <p>You were right to go.</p>
+        <p>Some loves aren&apos;t meant to stay &mdash;</p>
+        <p>they&apos;re meant to teach you</p>
+        <p>what your heart is capable of.</p>
+        <br />
+        <p class="poem-last">And mine, it turns out,</p>
+        <p class="poem-last">is capable of you.</p>
+        <p class="poem-last">Still. Always.</p>
+        </div>
+        <p class="poem-author">&mdash; written just for Stephanie</p>
+    </div>
+    </section>
+
+
+  <!-- ============================================================
+       3. THINGS I LOVE ABOUT YOU — flip card
+       ============================================================ -->
+  <section id="reasons" class="section">
+    <div class="section-head">
+      <p class="kicker">Reasons</p>
+      <h2>Things I love about you.</h2>
+      <p class="lede">Tap the card for another reason.</p>
+    </div>
+
+    <div class="reason-wrap">
+      <div class="reason-card" id="reason-card">
+        <div class="reason-inner" id="reason-inner">
+
+          <div class="reason-face reason-front">
+            <i class="fa-solid fa-heart"></i>
+            <p id="reason-text">Your smile &mdash; it could end any bad day I ever had.</p>
+          </div>
+
+          <div class="reason-face reason-back">
+            <i class="fa-solid fa-heart"></i>
+            <p id="reason-text-back">&hellip;</p>
+          </div>
+
+        </div>
+      </div>
+      <p class="reason-hint">
+        <i class="fa-solid fa-hand-pointer"></i> click to flip
+      </p>
+    </div>
+  </section>
+
+  
+
+
+  <!-- ============================================================
+       4. POLAROID DRIFTING STRIP
+       ============================================================ -->
+  <section id="memories" class="section section-dark">
+    <div class="section-head">
+      <p class="kicker">Memories</p>
+      <h2>Floating by, like they always do.</h2>
+    </div>
+
+    <div class="polaroid-track">
+      <!-- Filled and duplicated by script.js for seamless loop -->
+      <div class="polaroid-strip" id="polaroid-strip"></div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       5. GALLERY
+       ============================================================ -->
+  <section id="gallery" class="section">
+    <div class="section-head">
+      <p class="kicker">Moments</p>
+      <h2>Every photo, a heartbeat.</h2>
+      <p class="lede">Your smile always made it home.</p>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="g-item"><img src="photo_5873199393547161570_x.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161571_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161573_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161574_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161575_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161576_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161577_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161578_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161579_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161580_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161581_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161582_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161631_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161623_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161633_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161597_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161584_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161619_y.jpg" alt="Stephanie" /></div>
+      <div class="g-item"><img src="photo_5873199393547161597_y.jpg" alt="Stephanie" /></div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       6. VIDEO MOMENTS
+       ============================================================ -->
+  <section id="videos" class="section section-dark">
+    <div class="section-head">
+      <p class="kicker">Video moments</p>
+      <h2>Little clips I kept.</h2>
+      <p class="lede">Pieces of you I never want to forget.</p>
+    </div>
+
+    <div class="video-grid">
+      <div class="v-item">
+        <video controls preload="metadata" playsinline autoplay="autoplay" muted loop>
+          <source src="IMG_0797.MP4" type="video/mp4" />
+        </video>
+      </div>
+      <div class="v-item">
+        <video controls preload="metadata" playsinline autoplay="autoplay" muted loop>
+          <source src="IMG_0798.MP4" type="video/mp4" />
+        </video>
+      </div>
+      <div class="v-item">
+        <video controls preload="metadata" playsinline autoplay="autoplay" muted loop>
+          <source src="IMG_0800.MP4" type="video/mp4" />
+        </video>
+      </div>
+      <div class="v-item">
+        <video controls preload="metadata" playsinline autoplay="autoplay" muted loop>
+          <source src="IMG_0802.MP4" type="video/mp4" />
+        </video>
+      </div>
+      <div class="v-item">
+        <video controls preload="metadata" playsinline autoplay="autoplay" muted loop>
+          <source src="IMG_9176.MP4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       7. TIMELINE
+       ============================================================ -->
+  <section id="timeline" class="section">
+    <div class="section-head">
+      <p class="kicker">Our story</p>
+      <h2>A timeline of you &amp; me</h2>
+    </div>
+
+    <div class="timeline">
+
+      <div class="t-item">
+        <div class="t-dot"></div>
+        <div class="t-card">
+          <p class="t-date">The Beginning</p>
+          <h3>The first hello</h3>
+          <p>You walked into my life through a youth conference, and somehow it felt like sunlight.</p>
+        </div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot"></div>
+        <div class="t-card">
+          <p class="t-date">Late Nights</p>
+          <h3>Calls that never ended</h3>
+          <p>We&apos;d talk until your eyes got heavy.</p>
+        </div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot"></div>
+        <div class="t-card">
+          <p class="t-date">The Little Things</p>
+          <h3>Your laugh, your voice</h3>
+          <p>The way you said my name. The way you&apos;d send a single emoji and make my whole day better.</p>
+        </div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot"></div>
+        <div class="t-card">
+          <p class="t-date">The Misunderstanding</p>
+          <h3>Where I went wrong</h3>
+          <p>Actions came out crooked. Silence grew where softness should have been. I&apos;m sorry for the version of me that hurt you.</p>
+        </div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot"></div>
+        <div class="t-card">
+          <p class="t-date">Today</p>
+          <h3>Still here. Still loving you.</h3>
+          <p>Even if you&apos;ve moved on, my heart hasn&apos;t. And that&apos;s okay &mdash; because loving you was never a mistake.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       8. LEAVE A MESSAGE
+       ============================================================ -->
+  <section id="reply" class="section section-dark">
+    <div class="section-head">
+      <p class="kicker">Your turn</p>
+      <h2>Leave a message.</h2>
+      <p class="lede">Anything you want to say. It stays saved on this device, just for you.</p>
+    </div>
+
+        <div class="reply-card">
+    <form id="message-form" action="Yhttps://formspree.io/f/mqeojpyr" method="POST">
+        <input type="hidden" name="_subject" value="💌 Stephanie left you a message" />
+        <textarea id="reply-input" name="message" rows="5" placeholder="Write to me, Stephanie&hellip;"></textarea>
+        <div class="reply-row">
+        <button type="submit" id="reply-save" class="reply-btn">
+            <i class="fa-solid fa-paper-plane"></i> Send my words
+        </button>
+        <span id="reply-status" class="reply-status"></span>
+        </div>
+    </form>
+    <p id="reply-saved-label" class="reply-saved-label hidden">You wrote:</p>
+    <blockquote id="reply-saved" class="reply-saved hidden"></blockquote>
+    </div>
+  </section>
+
+    <!-- SECRET SECTION — paste this BEFORE the footer -->
+    <section id="secret-section" class="section secret-section">
+    <div class="section-head">
+        <p class="kicker">A hidden heart</p>
+        <h2>Something I kept just for you.</h2>
+        <p class="lede">Click the heart five times, if you dare.</p>
+    </div>
+
+    <div class="secret-center">
+        <button id="secret-heart" class="secret-heart" title="...">
+        <i class="fa-solid fa-heart"></i>
+        </button>
+        <p id="secret-count" class="secret-count"></p>
+
+        <div id="secret-message" class="secret-message hidden">
+        <i class="fa-solid fa-lock-open"></i>
+        <p>You found it. If you&apos;re reading this, it means you cared enough to keep clicking &mdash; the same way I&apos;ll always care enough to keep loving you. No matter where you go, a piece of my heart goes with you. &mdash; Always yours.</p>
+        </div>
+    </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+    <i class="fa-solid fa-heart footer-heart"></i>
+    <p>Made with love. For Stephanie. Always.</p>
+    <p class="footer-small">Every word here is true.</p>
+    </footer>
+
+  <!-- ============================================================
+       LIGHTBOX (photo fullscreen viewer)
+       ============================================================ -->
+  <div id="lightbox" class="lightbox">
+    <span class="lb-close">&times;</span>
+    <img id="lb-img" src="" alt="" />
+  </div>
+
+
+  <!-- ── Scripts ────────────────────────────────────────────── -->
+  <script src="babyyaa.js"></script>
+
+</body>
+</html>
